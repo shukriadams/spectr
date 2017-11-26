@@ -1,0 +1,13 @@
+{{!do not modify this file, it is the only page used by the CMS}}
+{{#extend __layout.__name __layout.__data}}
+    {{#content "head"}}
+        {{#each __headSections}}
+            {{renderSection this.__partial this.__data}}
+        {{/each}}
+    {{/content}}
+    {{#content "body"}}
+        {{#each __bodySections}}
+            {{renderSection this.__partial this.__data}}
+        {{/each}}
+    {{/content}}
+{{/extend}}

@@ -1,0 +1,22 @@
+{
+    "__layout" : {
+        "__name" : "defaultLayout",
+        "__data" : { "lang" : "en"}
+    },
+
+    "__headSections" : [],
+
+    "__bodySections" : [
+        {
+            "__partial" : "hero",
+            "__data" : {
+                "title" : "Page title!",
+                "pointsModel" : "<%= points 3 %>"
+            }
+        },
+        {
+            "__partial" : "content",
+            "__data" : "<%= simpleContent %>"
+        }
+    ]
+}

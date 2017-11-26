@@ -1,0 +1,11 @@
+{
+    "name": "hamfist",
+    "version": "0.0.1",
+    "description": "A tiny cms for prototyping frontend",
+    "private": true,
+    "author": "shukri.adams@gmail.com",
+    "license": "MIT",
+    "dependencies" : {
+        "express" : "4.16.2"
+    }
+}

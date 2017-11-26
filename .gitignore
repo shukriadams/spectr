@@ -1,0 +1,7 @@
+/.idea
+/vagrant/ubuntu-xenial-16.04-cloudimg-console.log
+/vagrant/.vagrant
+/node_modules
+/yarn.lock
+/examples/express/node_modules
+/examples/express/yarn.lock
