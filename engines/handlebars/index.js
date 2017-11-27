@@ -1,4 +1,4 @@
-var Handlebars = require('handlebars'),
+var Handlebars,
     unescape = require('unescape'),
     fs = require('fs'),
     path = require('path'),
@@ -8,6 +8,9 @@ var Handlebars = require('handlebars'),
 var Engine = function (options){
     options = options || {};
     this.options = options;
+
+    // Handlebars can be passed in preconfigured if wanted
+    Handlebars = options.Handlebars || require('handlebars');
 
     var self = this;
 
