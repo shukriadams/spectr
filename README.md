@@ -1,8 +1,7 @@
 # Spectr
 
-Spectr is a simple JSON-focused "CMS" for rapid frontend prototyping and development.
-It inherits from and is strongly influenced by the "no-backend" approach of static frontend projects like
-Assemble.io and Jekyll.
+Spectr is a simple JSON-focused framework for rapid frontend prototyping and development. It inherits from and is
+strongly influenced by the "no-backend" approach of static frontend projects like Assemble.io.
 
 ## Build environment
 
@@ -14,7 +13,7 @@ Spectr supports Handlebars.js out of the box. Other template engines can be adde
 
 ## Data
 
-### Static JSON
+### From JSON files
 
 Spectr is first and foremost a convenient way to create and manage lots of JSON. It tries to be forgiving, failing
 silently on data errors, until you get things right.
@@ -33,7 +32,7 @@ complex.json
         "content" : "<%= simple %>"
     }
 
-yields
+resolves to
 
     {
         "content" : {
@@ -41,11 +40,11 @@ yields
         }
     }
 
-### Data from functions
+### From script
 
 Spectr also lets you create JSON from functions, and treat these the same as file-based JSON.
 
-basic.json
+basic.js
 
     module.exports = function(arg){
         return {
@@ -59,7 +58,7 @@ complex.json
         "content" : "<%= basic extras %>"
     }
 
-yields
+resolves to
 
     {
         "content" : {
@@ -75,4 +74,4 @@ anything should do.
 
 ## Other requirements
 
-Spectr works on node 0.10 and above.
+Spectr has been tested on node 4.x.

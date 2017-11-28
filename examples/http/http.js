@@ -5,11 +5,12 @@ var http = require('http'),
 
 // set up spectr
 var spectr = new Spectr({
-    views : path.join(__dirname, '../common/views'),
+    views : path.join(__dirname, '../common/views/**/*.hbs'),
+    pages : path.join(__dirname, '../common/pages/**/*.hbs'),
     models : {
-        pages : path.join(__dirname, '../common/models/pages'),
-        functions : path.join(__dirname, '../common/models/functions'),
-        static : path.join(__dirname, '../common/models/static')
+        pages : path.join(__dirname, '../common/models/pages/**/*.json'),
+        functions : path.join(__dirname, '../common/models/functions/**/*.js'),
+        static : path.join(__dirname, '../common/models/static/**/*.json')
     },
     engine : new HandlebarsEngine()
 });
@@ -22,28 +23,28 @@ var spectr = new Spectr({
 var server = http.createServer(function (req, res) {
 
     // reload all data from file each page load, you probably want this on a dev environment
-    spectr.refresh();
+    spectr.resolve(function(){
+        // Page url is the route. To handle a given route, create a page model file with the same name as that route.
+        // Page models go in your "models/pages" folder
+        var route = req.url.substr(1); //remove leading "/"
+        if (!route || !route.length)
+            route = 'index'; // treat "index" as default for empty routes
 
-    // Page url is the route. To handle a given route, create a page model file with the same name as that route.
-    // Page models go in your "models/pages" folder
-    var route = req.url.substr(1); //remove leading "/"
-    if (!route || !route.length)
-        route = 'index'; // treat "index" as default for empty routes
+        // renderRoute returns null if route doesn't exist, else it return markup for that route
+        var markup = spectr.renderRoute(route);
+        if (!markup)
+        {
+            res.statusCode = 404;
+            res.setHeader('Content-Type', 'text/plain');
+            res.end('No model route found for ' + route);
+            return;
+        }
 
-    // renderRoute returns null if route doesn't exist, else it return markup for that route
-    var markup = spectr.renderRoute(route);
-    if (!markup)
-    {
-        res.statusCode = 404;
-        res.setHeader('Content-Type', 'text/plain');
-        res.end('No model route found for ' + route);
-        return;
-    }
-
-    res.setHeader('Content-Length', markup.length);
-    res.setHeader('Content-Type', 'text/html');
-    res.statusCode = 200;
-    res.end(markup);
+        res.setHeader('Content-Length', markup.length);
+        res.setHeader('Content-Type', 'text/html');
+        res.statusCode = 200;
+        res.end(markup);
+    });
 
 });
 

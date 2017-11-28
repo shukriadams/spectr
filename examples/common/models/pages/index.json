@@ -10,7 +10,7 @@
         {
             "__partial" : "hero",
             "__data" : {
-                "title" : "Page title!",
+                "text" : "Page title",
                 "pointsModel" : "<%= points 3 %>"
             }
         },

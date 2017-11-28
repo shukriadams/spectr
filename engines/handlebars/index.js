@@ -1,3 +1,6 @@
+/**
+ *
+ */
 var Handlebars,
     unescape = require('unescape'),
     fs = require('fs'),
@@ -6,14 +9,16 @@ var Handlebars,
     layouts = require('handlebars-layouts');
 
 
+/**
+ *
+ */
 var Engine = function (options){
     options = options || {};
     this.options = options;
+    this.pages = {};
 
     // Handlebars can be passed in preconfigured if wanted
     Handlebars = options.Handlebars || require('handlebars');
-
-    var self = this;
 
     Handlebars.registerHelper(layouts(Handlebars));
     Handlebars.registerHelper('renderSection', function(partialName, context){
@@ -32,8 +37,9 @@ var Engine = function (options){
             fn = Handlebars.compile(template);
 
         var output = fn(context).replace(/^\s+/, '');
-        return new Handlebars.SafeString(self._decode(output));
-    });
+        return new Handlebars.SafeString(this._decode(output));
+
+    }.bind(this));
 
     // get the standard page
     this.page = Handlebars.compile(fs.readFileSync(path.join(__dirname, 'page.hbs'), 'utf8'));
@@ -41,9 +47,13 @@ var Engine = function (options){
 };
 
 
+/**
+ *
+ */
 Engine.prototype._decode = function(string){
     string = unescape(string);
     string = new Handlebars.SafeString(string).string;
+
     // temp workaround to fix hex codes being rendered, not sure what's causing this
     string = string.replace('&#x3D;','=');
     string = string.replace(/&#x27;/g, "'");
@@ -57,33 +67,69 @@ Engine.prototype._decode = function(string){
  * Finds and registers all partials associated with engine. This must be done whenever partials are changed, or on page
  * render.
  */
-Engine.prototype.registerPartials = function(callback){
+Engine.prototype.resolve = function(callback){
     if (!callback)
-        throw new Error('registerPartials expects a callback')
+        throw new Error('registerPartials expects a callback');
 
-    glob(this.options.views, function(err, partials){
-        if (err)
-            return callback(err);
+    if (this.options.views)
+        glob(this.options.views, function(err, partials){
+            if (err)
+                return callback(err);
 
-        for (var i = 0 ; i < partials.length; i ++){
-            var partial = partials[i],
-                content = fs.readFileSync(partial, 'utf8'),
-                partialName = path.basename(partial).slice(0, -4); // find better way to remove extension!
+            for (var i = 0 ; i < partials.length; i ++){
+                var partial = partials[i],
+                    content = fs.readFileSync(partial, 'utf8'),
+                    partialName = path.basename(partial).slice(0, -4); // find better way to remove extension!
 
-            try {
-                Handlebars.registerPartial(partialName, content);
-            }catch(ex){
-                console.log('failed to compile partial ' + partialName + ' @ ' + partial, ex);
+                try {
+                    Handlebars.registerPartial(partialName, content);
+                }catch(ex){
+                    console.log('failed to compile partial ' + partialName + ' @ ' + partial, ex);
+                }
             }
-        }
 
-        callback();
-    })
+            then.apply(this);
+
+        }.bind(this));
+    else
+        then.apply(this);
+
+    function then(){
+        if (this.options.pages){
+            glob(this.options.pages, function(err, pages){
+
+                for (var i = 0 ; i < pages.length; i ++){
+                    var page = pages[i],
+                        content = fs.readFileSync(page, 'utf8'),
+                        pageName = path.basename(page).slice(0, -4); // find better way to remove extension!
+
+                    try {
+                        this.pages[pageName] = Handlebars.compile(content);
+                    }catch(ex){
+                        console.log('failed to compile page ' + pageName + ' @ ' + page, ex);
+                    }
+                }
+
+                callback();
+            }.bind(this))
+        } else
+            callback();
+    }
 
 };
 
+
+/**
+ *
+ */
 Engine.prototype.render = function(data){
-    var markup = this.page(data);
+    var pageTemplate = data.__page ? this.pages[data.__page.__name] : this.page,
+        bindingData = data.__page? data.__page.__data : data;
+
+    if (!pageTemplate)
+        return 'Could not find a page template for "' + data.__page.__name +'".';
+
+    var markup = pageTemplate(bindingData);
     markup = this._decode(markup);
     return markup;
 };

@@ -1,0 +1,10 @@
+{{#extend "defaultLayout" layout}}
+    {{#content "head"}}
+        <script>
+            console.log('header script');
+        </script>
+    {{/content}}
+    {{#content "body"}}
+        {{> hero hero}}
+    {{/content}}
+{{/extend}}

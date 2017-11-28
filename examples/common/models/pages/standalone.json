@@ -1,0 +1,9 @@
+{
+    "__page" : {
+        "__name" : "standalone",
+        "__data" : {
+            "layout" : "<%= layout %>",
+            "hero" : "<%= hero %>"
+        }
+    }
+}
