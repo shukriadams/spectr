@@ -23,6 +23,9 @@ var Engine = function (options){
         var fn,
             template = Handlebars.partials[partialName];
 
+        if (!template)
+            return console.log('renderSection failed to retrieve partial ' + partialName);
+
         if (typeof template === 'function')
             fn = template;
         else
@@ -40,10 +43,11 @@ var Engine = function (options){
 
 Engine.prototype._decode = function(string){
     string = unescape(string);
-    string = new Handlebars.SafeString(string);
+    string = new Handlebars.SafeString(string).string;
     // temp workaround to fix hex codes being rendered, not sure what's causing this
     string = string.replace('&#x3D;','=');
-    string = string.replace(/&#x27;/g, "'")
+    string = string.replace(/&#x27;/g, "'");
+    string = string.replace(/&#x60;/g, "`");
 
     return string;
 };
@@ -66,7 +70,11 @@ Engine.prototype.registerPartials = function(callback){
                 content = fs.readFileSync(partial, 'utf8'),
                 partialName = path.basename(partial).slice(0, -4); // find better way to remove extension!
 
-            Handlebars.registerPartial(partialName, content);
+            try {
+                Handlebars.registerPartial(partialName, content);
+            }catch(ex){
+                console.log('failed to compile partial ' + partialName + ' @ ' + partial, ex);
+            }
         }
 
         callback();
