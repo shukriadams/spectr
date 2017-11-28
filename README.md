@@ -6,7 +6,7 @@ Assemble.io and Jekyll.
 
 ## Build environment
 
-Spectr is vanilla Nodejs, it will fit into built framework that plays nice with Nodejs.
+Spectr is vanilla Nodejs, it will fit into any built framework that plays nice with that.
 
 ## Template engines
 
@@ -16,8 +16,10 @@ Spectr supports Handlebars.js out of the box. Other template engines can be adde
 
 ### Static JSON
 
-Spectr is first and foremost a convenient way to create and manage lots of JSON. JSON models are normally stored in
-files, and complex models can easily be stitched together from simpler modules.
+Spectr is first and foremost a convenient way to create and manage lots of JSON. It tries to be forgiving, failing
+silently on data errors, until you get things right.
+
+JSON models are normally stored in files, and complex models can easily be stitched together from simpler modules.
 
 simple.json
 
