@@ -120,11 +120,12 @@ Engine.prototype.resolve = function(callback){
 
 
 /**
- *
+ * Renders page template based on the content of data. Data context can be a model defined in data, or the entire data
+ * context if no model is specified.
  */
 Engine.prototype.render = function(data){
     var pageTemplate = data.__page ? this.pages[data.__page.__name] : this.page,
-        bindingData = data.__page? data.__page.__data : data;
+        bindingData = data.__page && data.__page.__data ? data.__page.__data : this.options.fallbackModels;
 
     if (!pageTemplate)
         return 'Could not find a page template for "' + data.__page.__name +'".';

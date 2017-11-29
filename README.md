@@ -3,6 +3,11 @@
 Spectr is a simple JSON-focused framework for rapid frontend prototyping and development. It inherits from and is
 strongly influenced by the "no-backend" approach of static frontend projects like Assemble.io.
 
+Spectr uses data-centric routing : instead of rendering template pages which are each responsible for calling whatever
+data they need, Spectr forces you to route with data models, making it much easier to pass different data to the same
+page. This is advantageous in real-world development where one frequently reuses templates and displays/tests a variety
+of data in a template.
+
 ## Build environment
 
 Spectr is vanilla Nodejs, it will fit into any built framework that plays nice with that.
