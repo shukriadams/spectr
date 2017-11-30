@@ -5,7 +5,7 @@ var Handlebars,
     unescape = require('unescape'),
     fs = require('fs'),
     path = require('path'),
-    glob = require('glob'),
+    globby = require('globby'),
     layouts = require('handlebars-layouts');
 
 
@@ -68,32 +68,44 @@ Engine.prototype.resolve = function(callback){
         throw new Error('registerPartials expects a callback');
 
     if (this.options.views)
-        glob(this.options.views, function(err, partials){
-            if (err)
-                return callback(err);
 
-            for (var i = 0 ; i < partials.length; i ++){
-                var partial = partials[i],
-                    content = fs.readFileSync(partial, 'utf8'),
-                    partialName = path.basename(partial).slice(0, -4); // find better way to remove extension!
+        globby(this.options.views)
 
-                try {
-                    Handlebars.registerPartial(partialName, content);
-                }catch(ex){
-                    console.log('failed to compile partial ' + partialName + ' @ ' + partial, ex);
+            .catch(function(err){
+                callback(err);
+            })
+
+            .then(function(partials){
+                for (var i = 0 ; i < partials.length; i ++){
+                    var partial = partials[i],
+                        content = fs.readFileSync(partial, 'utf8'),
+                        partialName = path.basename(partial).slice(0, -4); // find better way to remove extension!
+
+                    try {
+                        Handlebars.registerPartial(partialName, content);
+                    }catch(ex){
+                        console.log('failed to compile partial ' + partialName + ' @ ' + partial, ex);
+                    }
                 }
-            }
 
-            then.apply(this);
+                then.apply(this);
+            }.bind(this));
 
-        }.bind(this));
     else
         then.apply(this);
 
     function then(){
-        if (this.options.pages){
-            glob(this.options.pages, function(err, pages){
 
+        if (!this.options.pages)
+            return callback();
+            
+        globby(this.options.pages)
+
+            .catch(function(err){
+                callback(err)
+            })
+
+            .then(function(pages){
                 for (var i = 0 ; i < pages.length; i ++){
                     var page = pages[i],
                         content = fs.readFileSync(page, 'utf8'),
@@ -107,9 +119,8 @@ Engine.prototype.resolve = function(callback){
                 }
 
                 callback();
-            }.bind(this))
-        } else
-            callback();
+            }.bind(this));
+
     }
 
 };
