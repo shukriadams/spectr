@@ -40,10 +40,6 @@ var Engine = function (options){
         return new Handlebars.SafeString(this._decode(output));
 
     }.bind(this));
-
-    // get the standard page
-    this.page = Handlebars.compile(fs.readFileSync(path.join(__dirname, 'page.hbs'), 'utf8'));
-
 };
 
 
@@ -124,11 +120,11 @@ Engine.prototype.resolve = function(callback){
  * context if no model is specified.
  */
 Engine.prototype.render = function(data){
-    var pageTemplate = data.__page ? this.pages[data.__page.__name] : this.page,
-        bindingData = data.__page && data.__page.__data ? data.__page.__data : this.options.fallbackModels;
+    var pageTemplate = this.pages[data.page] ,
+        bindingData = data.data || this.options.fallbackModels;
 
     if (!pageTemplate)
-        return 'Could not find a page template for "' + data.__page.__name +'".';
+        return 'Could not find a page template for "' + data.page +'".';
 
     var markup = pageTemplate(bindingData);
     markup = this._decode(markup);

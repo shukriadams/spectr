@@ -6,5 +6,10 @@
     {{/content}}
     {{#content "body"}}
         {{> hero hero}}
+
+        {{#each content}}
+            {{> content this}}
+        {{/each}}
+
     {{/content}}
 {{/extend}}
