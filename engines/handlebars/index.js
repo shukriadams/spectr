@@ -69,13 +69,16 @@ Engine.prototype.resolve = function(callback){
 
     if (this.options.views)
 
-        globby(this.options.views)
+        globby(this.options.views.src)
 
             .catch(function(err){
                 callback(err);
             })
 
             .then(function(partials){
+
+                partials = partials || [];
+
                 for (var i = 0 ; i < partials.length; i ++){
                     var partial = partials[i],
                         content = fs.readFileSync(partial, 'utf8'),
@@ -99,13 +102,15 @@ Engine.prototype.resolve = function(callback){
         if (!this.options.pages)
             return callback();
             
-        globby(this.options.pages)
+        globby(this.options.pages.src)
 
             .catch(function(err){
                 callback(err)
             })
 
             .then(function(pages){
+                pages = pages || [];
+
                 for (var i = 0 ; i < pages.length; i ++){
                     var page = pages[i],
                         content = fs.readFileSync(page, 'utf8'),

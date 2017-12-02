@@ -10,19 +10,21 @@ var spectr = new Spectr({
         pages : path.join(__dirname, '../common/pages/**/*.hbs')
     },
     models : {
-        pages : path.join(__dirname, '../common/models/pages/**/*.json'),
+        pages : { cwd : path.join(__dirname, '../common/models/pages'), src : ['**/*.json'] },
         functions : path.join(__dirname, '../common/models/functions/**/*.js'),
         static : path.join(__dirname, '../common/models/static/**/*.json')
     }
 });
 
 // the only route handler you need
-app.get('/:route?', function (req, res) {
+app.get('/*', function (req, res) {
 
     // reload all data from file each page load, you probably want this on a dev environment
-    spectr.resolve(function(){
+    spectr.resolve(function(err){
+        if (err)
+            console.log(err);
 
-        var route = req.params.route;
+        var route = req.params[0];
         // set default
         if (!route || !route.length)
             route = 'index';
