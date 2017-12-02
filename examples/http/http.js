@@ -5,10 +5,12 @@ var http = require('http'),
 
 // set up spectr
 var spectr = new Spectr({
-    views : path.join(__dirname, '../common/views/**/*.hbs'),
-    pages : path.join(__dirname, '../common/pages/**/*.hbs'),
+    templates : {
+        views : path.join(__dirname, '../common/views/**/*.hbs'),
+        pages : path.join(__dirname, '../common/pages/**/*.hbs')
+    },
     models : {
-        pages : path.join(__dirname, '../common/models/pages/**/*.json'),
+        pages : { cwd : path.join(__dirname, '../common/models/pages'), src : ['**/*.json'] },
         functions : path.join(__dirname, '../common/models/functions/**/*.js'),
         static : path.join(__dirname, '../common/models/static/**/*.json')
     },
