@@ -2,7 +2,6 @@
  *
  */
 var Handlebars,
-    unescape = require('unescape'),
     fs = require('fs'),
     path = require('path'),
     globby = require('globby'),
@@ -36,26 +35,8 @@ var Engine = function (options){
         else
             fn = Handlebars.compile(template);
 
-        var output = fn(context).replace(/^\s+/, '');
-        return new Handlebars.SafeString(this._decode(output));
-
+        return fn(context).replace(/^\s+/, '');
     }.bind(this));
-};
-
-
-/**
- *
- */
-Engine.prototype._decode = function(string){
-    string = unescape(string);
-    string = new Handlebars.SafeString(string).string;
-
-    // temp workaround to fix hex codes being rendered, not sure what's causing this
-    string = string.replace('&#x3D;','=');
-    string = string.replace(/&#x27;/g, "'");
-    string = string.replace(/&#x60;/g, "`");
-
-    return string;
 };
 
 
@@ -64,6 +45,7 @@ Engine.prototype._decode = function(string){
  * render.
  */
 Engine.prototype.resolve = function(callback){
+    
     if (!callback)
         throw new Error('registerPartials expects a callback');
 
@@ -86,7 +68,7 @@ Engine.prototype.resolve = function(callback){
 
                     try {
                         Handlebars.registerPartial(partialName, content);
-                    }catch(ex){
+                    } catch(ex){
                         console.log('failed to compile partial ' + partialName + ' @ ' + partial, ex);
                     }
                 }
@@ -142,9 +124,7 @@ Engine.prototype.render = function(data){
     if (!pageTemplate)
         return 'Could not find a page template for "' + data.page +'".';
 
-    var markup = pageTemplate(bindingData);
-    markup = this._decode(markup);
-    return markup;
+    return pageTemplate(bindingData);
 };
 
 module.exports = Engine;

@@ -29,8 +29,10 @@ var server = http.createServer(function (req, res) {
         // Page url is the route. To handle a given route, create a page model file with the same name as that route.
         // Page models go in your "models/pages" folder
         var route = req.url.substr(1); //remove leading "/"
-        if (!route || !route.length)
-            route = 'index'; // treat "index" as default for empty routes
+
+        // set default route
+        route = route || 'index';
+                
 
         // renderRoute returns null if route doesn't exist, else it return markup for that route
         var markup = spectr.renderRoute(route);

@@ -25,9 +25,9 @@ app.get('/*', function (req, res) {
             console.log(err);
 
         var route = req.params[0];
-        // set default
-        if (!route || !route.length)
-            route = 'index';
+
+        // set default route
+        route = route || 'index';
 
         var markup = spectr.renderRoute(route);
         if (!markup)
