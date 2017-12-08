@@ -31,7 +31,7 @@ app.get('/*', function (req, res) {
 
         var markup = spectr.renderRoute(route);
         if (!markup)
-            return res.status(404).send('No model route found for ' + req.params.route);
+            return res.status(404).send('No model route found for ' + req.params[0]);
 
         return res.send(markup);
     });
