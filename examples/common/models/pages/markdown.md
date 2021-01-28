@@ -1,5 +1,5 @@
 {
-    page : "standalone",
+    template : "standalone",
     hero : "s"
 }
 ---

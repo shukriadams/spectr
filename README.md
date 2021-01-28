@@ -22,7 +22,7 @@ with your models duplicated across many files.
 At the heart of Spectr is the concept that each rendered HTML page is defined by a unique JSON model file. The file `hello.json` with content
 
     {
-        "page" : "world",
+        "template" : "world",
         "data" : {
             "header" : "hello world"
         }
@@ -40,23 +40,23 @@ to render the page `hello.html` with content
         hello world
     </div>
 
-Nothing special yet. If you're using Spectr you'll be wanting to build your page models up from other other JSON models. You can create an independent model file `myModel.json` containining
+Nothing special yet. If you're using Spectr you'll be wanting to build your template models up from other other JSON models. You can create an independent model file `myModel.json` containining
 
     {
         "header" : "hello world"
     }
 
-and include it in your page model file using the include syntax `"<%= source %>"`
+and include it in your template model file using the include syntax `"<%= source %>"`
 
     {
-        "page" : "world",
+        "template" : "world",
         "data" : "<%= myModel %>"
     }
 
-You can make your page model as complex as desired, importing whatever you need
+You can make your template model as complex as desired, importing whatever you need
 
     {
-        "page" : "world",
+        "template" : "world",
         "data" : {
             "hero" : "<%= myHeroModel %>",
             "someSections" : {
@@ -111,6 +111,11 @@ the Handlebars rendered from `complex.json` with get
             "text" : "Some content with extras"
         }
     }
+
+
+## Limitations
+
+All model and template names are bound to the file names those items are defined in. Directory nesting is ignored, so if you have the same file name in different directories, only one will be used, depending on the order they are detected. 
 
 ## Fast to rebuild
 

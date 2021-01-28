@@ -1,21 +1,19 @@
-var http = require('http'),
+let http = require('http'),
     path = require('path'),
     HandlebarsEngine = require('../../engines/handlebars'),
-    Spectr = require('../../');
-
-// set up spectr
-var spectr = new Spectr({
-    templates : {
-        views : path.join(__dirname, '../common/views/**/*.hbs'),
-        pages : path.join(__dirname, '../common/pages/**/*.hbs')
-    },
-    models : {
-        pages : { cwd : path.join(__dirname, '../common/models/pages'), src : ['**/*.json'] },
-        functions : path.join(__dirname, '../common/models/functions/**/*.js'),
-        static : path.join(__dirname, '../common/models/static/**/*.json')
-    },
-    engine : new HandlebarsEngine()
-});
+    Spectr = require('../../').Spectr,
+    spectr = new Spectr({
+        templates : {
+            views : path.join(__dirname, '../common/views/**/*.hbs'),
+            pages : path.join(__dirname, '../common/pages/**/*.hbs')
+        },
+        models : {
+            pages : { cwd : path.join(__dirname, '../common/models/pages'), src : ['**/*.json'] },
+            functions : path.join(__dirname, '../common/models/functions/**/*.js'),
+            static : path.join(__dirname, '../common/models/static/**/*.json')
+        },
+        engine : new HandlebarsEngine()
+    })
 
 
 /**

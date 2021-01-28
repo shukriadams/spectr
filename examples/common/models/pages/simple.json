@@ -1,0 +1,7 @@
+{
+    "template" : "simple",
+    "data" : {
+        "test" : "123",
+        "hero" : "<%= hero %>"
+    }
+}
