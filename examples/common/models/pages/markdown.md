@@ -1,0 +1,5 @@
+{
+    page : "standalone",
+    hero : "s"
+}
+---
