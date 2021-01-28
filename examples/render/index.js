@@ -31,7 +31,9 @@ spectr.renderAllRoutes({
         if (!fs.existsSync(path.dirname(filePath)))
             fs.mkdirSync(path.dirname(filePath));
 
-        fs.writeFile(filePath, output.content)
+        fs.writeFile(filePath, output.content, ()=>{
+            console.log('file written')
+        })
     },
     done : function(){
         console.log('finished rendering');
