@@ -1,5 +1,5 @@
 {
-    "page" : "standalone",
+    "template" : "standalone",
     "data" : {
         "layout" : "<%= layout %>",
         "hero" : "<%= hero %>",

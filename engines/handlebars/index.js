@@ -67,9 +67,9 @@ Engine.prototype.resolve = function(callback){
                         partialName = path.basename(partial).slice(0, -4); // find better way to remove extension!
 
                     try {
-                        Handlebars.registerPartial(partialName, content);
+                        Handlebars.registerPartial(partialName, content)
                     } catch(ex){
-                        console.log('failed to compile partial ' + partialName + ' @ ' + partial, ex);
+                        console.log('failed to compile partial ' + partialName + ' @ ' + partial, ex)
                     }
                 }
 
@@ -82,7 +82,7 @@ Engine.prototype.resolve = function(callback){
     function then(){
 
         if (!this.options.pages)
-            return callback();
+            return callback()
             
         globby(this.options.pages.src)
 
@@ -91,26 +91,25 @@ Engine.prototype.resolve = function(callback){
             })
 
             .then(function(pages){
-                pages = pages || [];
+                pages = pages || []
 
                 for (var i = 0 ; i < pages.length; i ++){
                     var page = pages[i],
                         content = fs.readFileSync(page, 'utf8'),
-                        pageName = path.basename(page).slice(0, -4); // find better way to remove extension!
+                        pageName = path.basename(page).slice(0, -4) // find better way to remove extension!
 
                     try {
-                        this.pages[pageName] = Handlebars.compile(content);
+                        this.pages[pageName] = Handlebars.compile(content)
                     }catch(ex){
-                        console.log('failed to compile page ' + pageName + ' @ ' + page, ex);
+                        console.log('failed to compile page ' + pageName + ' @ ' + page, ex)
                     }
                 }
 
-                callback();
-            }.bind(this));
+                callback()
+            }.bind(this))
 
     }
-
-};
+}
 
 
 /**
@@ -118,13 +117,13 @@ Engine.prototype.resolve = function(callback){
  * context if no model is specified.
  */
 Engine.prototype.render = function(data){
-    var pageTemplate = this.pages[data.page] ,
-        bindingData = data.data || this.options.fallbackModels;
+    let pageTemplate = this.pages[data.template] ,
+        bindingData = data.data || this.options.fallbackModels
 
     if (!pageTemplate)
-        return 'Could not find a page template for "' + data.page +'".';
+        return 'Could not find a page template for "' + data.template +'".'
 
-    return pageTemplate(bindingData);
-};
+    return pageTemplate(bindingData)
+}
 
-module.exports = Engine;
+module.exports = Engine

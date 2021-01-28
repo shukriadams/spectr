@@ -1,7 +1,7 @@
 const express = require('express'),
     path = require('path'),
     app = express(),
-    Spectr = require('../../'),
+    Spectr = require('../../').Spectr,
     spectr = new Spectr({
         templates : {
             views : path.join(__dirname, '../common/views/**/*.hbs'),
