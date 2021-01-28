@@ -17,24 +17,70 @@ with your models duplicated across many files.
 
 ## Data
 
-Spectr lets you easily create a unique data context for each page in your prototype, without having to write a lot of
-boilerplate Json. You can of course still choose to write a lof of static JSON. You can however create data ...
+### Hello world
 
-### From JSON files
+At the heart of Spectr is the concept that each rendered HTML page is defined by a unique JSON model file. The file `hello.json` with content
 
-JSON models are normally stored in files, and complex models can easily be stitched together from simpler modules.
+    {
+        "page" : "world",
+        "data" : {
+            "header" : "hello world"
+        }
+    }
 
-    *simple.json*
+can be combined with the Handlebars template `world.hbs`
+
+    <div>
+        {{header}}
+    </div>
+
+to render the page `hello.html` with content
+
+    <div>
+        hello world
+    </div>
+
+Nothing special yet. If you're using Spectr you'll be wanting to build your page models up from other other JSON models. You can create an independent model file `myModel.json` containining
+
+    {
+        "header" : "hello world"
+    }
+
+and include it in your page model file using the include syntax `"<%= source %>"`
+
+    {
+        "page" : "world",
+        "data" : "<%= myModel %>"
+    }
+
+You can make your page model as complex as desired, importing whatever you need
+
+    {
+        "page" : "world",
+        "data" : {
+            "hero" : "<%= myHeroModel %>",
+            "someSections" : {
+                "gadgets" : "<%= gadgetModel %>",
+                "etc" : "<%= whatever %>"
+            }
+        }
+    }
+
+### Combines JSON files in other JSON files
+
+The real power of Spectr comes from letting you stitch together data from mulitple sources to create more complex models for your page templates. If you have a model file `simple.json` with content
+
     {
         "text" : "I am a simple model"
     }
 
-    *complex.json*
+you can merge that into another JSON file `complex.json` using
+
     {
         "content" : "<%= simple %>"
     }
 
-resolves to
+When `complex.json` is used to render a Handlebars partial it will resolve 
 
     {
         "content" : {
@@ -42,23 +88,23 @@ resolves to
         }
     }
 
-### From script
+### Import from functions
 
-Spectr also lets you create data on-the-fly by mixing JSON and calls to javascript functions.
+Spectr also lets you create data on-the-fly by mixing JSON and calls to javascript functions. If you have a file `basic.js` containing
 
-    *basic.js*
     module.exports = function(arg){
         return {
             text : "Some content with " + arg
         }
-    };
+    }
 
-    *complex.json*
+and import it in `complex.json` as
+
     {
         "content" : "<%= basic extras %>"
     }
 
-resolves to
+the Handlebars rendered from `complex.json` with get
 
     {
         "content" : {
@@ -66,14 +112,9 @@ resolves to
         }
     }
 
-In this way your route JSON consists only of arguments for how data should be created, while your logic for creating
-models rests in centralized functions.
-
 ## Fast to rebuild
 
-Your static template system is great at the start, but once you've created a lot of complex partials and many pages,
-it can take a while to rebuild, especially as it typically rebuilds everything each time you make a change. Spectr
-can run on Express, rendering only the page you're requesting, and on-the-fly.
+Your static template system is great at the start, but once you've created a lot of complex partials and many pages, it can take a while to rebuild, especially as it typically rebuilds everything each time you make a change. Spectr can run on Express, rendering only the page you're requesting, and on-the-fly.
 
 Spectr can also render all its pages as static HTML if that's what you prefer.
 
@@ -85,13 +126,11 @@ Spectr is vanilla Nodejs, it will fit into any built framework that plays nice w
 
 Spectr supports Handlebars.js out of the box. Other template engines can be added in the future.
 
-
 ## Server
 
-Spectr has no opinions about which NodeJs web framework you're using. It works with Express and vanilla NodeJS, but
-anything should do.
+Spectr has no opinions about which NodeJs web framework you're using. It works with Express and vanilla NodeJS, but anything should do.
 
 ## Other requirements
 
-Spectr has been tested on node 4.x.
+Spectr has been tested on node 10.x.
 
