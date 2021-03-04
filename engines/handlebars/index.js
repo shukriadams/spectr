@@ -49,34 +49,39 @@ Engine.prototype.resolve = function(callback){
     if (!callback)
         throw new Error('registerPartials expects a callback');
 
-    if (this.options.views)
+    if (!Array.isArray(this.options.views))
+        this.options.views = [this.options.views]
+        
+    if (this.options.views){
+        let count = 0
+        for(const viewPath of this.options.views)
+            globby(viewPath)
 
-        globby(this.options.views.src)
+                .catch(function(err){
+                    callback(err);
+                })
 
-            .catch(function(err){
-                callback(err);
-            })
+                .then(function(partials){
+                    count ++
+                    partials = partials || [];
 
-            .then(function(partials){
+                    for (var i = 0 ; i < partials.length; i ++){
+                        var partial = partials[i],
+                            content = fs.readFileSync(partial, 'utf8'),
+                            partialName = path.basename(partial).slice(0, -4); // find better way to remove extension!
 
-                partials = partials || [];
-
-                for (var i = 0 ; i < partials.length; i ++){
-                    var partial = partials[i],
-                        content = fs.readFileSync(partial, 'utf8'),
-                        partialName = path.basename(partial).slice(0, -4); // find better way to remove extension!
-
-                    try {
-                        Handlebars.registerPartial(partialName, content)
-                    } catch(ex){
-                        console.log('failed to compile partial ' + partialName + ' @ ' + partial, ex)
+                        try {
+                            Handlebars.registerPartial(partialName, content)
+                        } catch(ex){
+                            console.log('failed to compile partial ' + partialName + ' @ ' + partial, ex)
+                        }
                     }
-                }
+                    
+                    if (count === this.options.views.length)
+                        then.apply(this);
 
-                then.apply(this);
-            }.bind(this));
-
-    else
+                }.bind(this));
+    } else
         then.apply(this);
 
     function then(){
